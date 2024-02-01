@@ -1,0 +1,43 @@
+#!/usr/bin/python3
+
+import sys
+import time
+from math import sqrt
+
+def is_prime(n):
+    '''Check if a number is prime.'''
+    return n > 1 and all(n % i != 0 for i in range(2, int(sqrt(n)) + 1))
+
+def factor_rsa_number(n):
+    '''Factorize an RSA number using trial division.'''
+    factors = []
+    for i in range(2, int(sqrt(n)) + 1):
+        while n % i == 0:
+            factors.append(i)
+            n //= i
+    if n > 2:
+        factors.append(n)
+    return factors
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: rsa <file>")
+        sys.exit()
+
+    input_file = sys.argv[1]
+
+    try:
+        with open(input_file, 'r') as f:
+            rsa_numbers = [int(line.strip()) for line in f.readlines()]
+    except FileNotFoundError:
+        print("File not found")
+        sys.exit()
+
+    start_time = time.time()
+
+    for n in rsa_numbers:
+        factors = factor_rsa_number(n)
+        print(f"{n}={'*'.join(map(str, factors))}")
+
+    exec_time = time.time() - start_time
+    print("Total execution time:", exec_time, "seconds")
